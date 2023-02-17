@@ -1,0 +1,40 @@
+{
+  "xsappname": "pr-1",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of WTC Checklist Management",
+  "scopes": [
+      {
+          "name": "$XSAPPNAME.WTCCLAdmin",
+          "description": "administrator"
+      }
+  ],
+  "attributes": [
+      {
+          "name": "plant",
+          "description": "Plant",
+          "valueType": "s"
+      }
+  ],
+  "role-templates": [
+      {
+          "name": "WTCCLAdminOIL",
+          "description": "WTC Open Issue Administrator",
+          "scope-references": [
+              "$XSAPPNAME.WTCCLAdmin"
+          ],
+          "attribute-references": [
+              "plant"
+          ]
+      },
+      {
+          "name": "WTCCLAdminCL",
+          "description": "WTC Checklist Management Administrator",
+          "scope-references": [
+              "$XSAPPNAME.WTCCLAdmin"
+          ],
+          "attribute-references": [
+              "plant"
+          ]
+      }
+  ]
+}

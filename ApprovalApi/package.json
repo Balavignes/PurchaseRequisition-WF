@@ -1,0 +1,17 @@
+{
+    "name": "hanapi-srv",
+    "version": "1.0.0",
+    "main": "Component.js",
+    "description": "Hana Cloud Table API",
+    "dependencies": {
+        "axios":"0.27.2",
+        "client-oauth2": "^4.3.3",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.2",
+        "request-promise": "^4.2.6",
+        "cfenv":"1.2.4",
+        "@sap/xsenv":"3.3.2",
+        "@sap/hdbext":"7.6.6"
+    }
+  }
+  

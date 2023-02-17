@@ -1,0 +1,131 @@
+{
+
+	"PurchaseReq": {
+
+		"approvalLevel": 1,
+
+		"Purchaserequisition": " 111483932 ",
+
+		"ItemNr": 100,
+
+		"PostingDate": "22/08/2022",
+
+		"PRDocType": "NB",
+
+		"PRDocTypeDesc": " PR on C.cntr/WBS.",
+
+		"Relstatus": "X",
+
+		"RelStrategy": "S2",
+
+		"PurchasingGroup": "N10",
+
+		"PurchasingGroupDescription": "POP IONUT-SEBASTI",
+
+		"Creator": "Commercial",
+
+		"RoomNumber": "-",
+
+		"RHEmailAddress": "b.a.shanmuganathan@accenture.com, gaspare.patti@accenture.com, stefania.di.nardo@accenture.com",
+
+		"NameofRequisitioner": "Steels",
+
+		"MaterialNumber": "TEXXX-0000008032",
+
+		"MaterialDescription": "ROUND Ø300X1000 ERGAL P-AlZn5,8MgCu",
+
+		"Plant": "RO02",
+
+		"PlantDescription": "BW&A ORADEA",
+
+		"MaterialGroup": "AB0000",
+
+		"MaterialGroupDescription": "RAW MATERIALS",
+
+		"Quantity": 50,
+
+		"UOM": "M",
+
+		"PRdate": "22/08/2014",
+
+		"ItemDeliveryDate": "11/09/2014",
+
+		"ReleaseDate": "22/08/2014",
+
+		"Price": 1000,
+
+		"ItemCategory": 0,
+
+		"ItemCategoryDescription": "Standard",
+
+		"AccountAssignmentCategory": "GS",
+
+		"AccountAssignmentCategoryDescription": "General Stock",
+
+		"PurchasingOrganization": "-",
+
+		"PurchasingOrganizationDescription": "-",
+
+		"CurrencyKey": "RON",
+
+		"WBSElement": "-",
+
+		"WBSElementDescription": "-",
+
+		"GLaccount": "M45900020",
+
+		"BusinessArea": "CC02",
+
+		"BusinessAreaDescription": "Body Welding",
+
+		"CostCenter": "-",
+
+		"CostCenterDescription": "-",
+
+		"CompanyCode": "1221",
+
+		"CompanyCodeDescription": "COMAU ROMANIA S.R.L.",
+
+		"DeletionIndicator": "X",
+
+		"Note": "MAGAZIE",
+
+		"Link": " https://docs.google.com/spreadsheets/d/16hy3_f7kZHBXa1MX3_XwCIYB5VIjEvIzSAN3XOCajyA/edit#gid=1020195906",
+
+		"Project": "-",
+
+		"ProjectDescription": "-",
+
+		"Amount": "50.000",
+
+		"GlobalKey": "EUR",
+
+		"GlobalAmount": "10.103,00",
+
+		"AcuAmount": "-",
+        "AcuAmountCkey": "-",
+		"WBSType": "-",
+
+		"CreatorName": "-",
+
+		"CreatorSurname": "-",
+
+		"CreatorEmailAddress": "-",
+
+		"ProdOrd": "-",
+
+		"SalesDocNumb": "-",
+
+		"SalesDocItem": "-",
+
+		"username": {
+            "Result": [
+                {
+                    "UserName": "b.a.shanmuganathan@accenture.com"
+                }
+            ]
+        }
+
+	}
+
+}

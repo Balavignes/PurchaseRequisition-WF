@@ -1,0 +1,281 @@
+<mvc:View controllerName="workflowuimodule.controller.MyTaskUI" 
+xmlns:uxap="sap.uxap" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout.form" height="100%">
+<Page id="__page0" class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer">
+    <customHeader>
+        <Toolbar id="_IDGenToolbar1">
+			<ToolbarSpacer id="_IDGenToolbarSpacer1"/>
+				<Image id="comauimg" height="50%" class="sapUiLargeMarginTop sapUiLargeMarginBottom" src="{imageModel>/path}" tooltip="COMAU"/>
+            <ToolbarSpacer id="_IDGenToolbarSpacer2"/>
+		</Toolbar>
+    </customHeader>
+    <content>
+    <ObjectHeader id="_IDGenObjectHeader1"
+		    binding="{PRdata>/PurchaseReq}"
+		    title="{PRdata>Purchaserequisition} - {PRdata>ItemNr}"
+		    number="{PRdata>Amount} {PRdata>CurrencyKey}"
+            numberState="Success"
+		    class="sapUiResponsivePadding--header" >
+        <statuses>
+        <ObjectStatus id="_IDGenObjectStatus1"
+			class="sapUiSmallMarginBottom"
+			text="({PRdata>/PurchaseReq/GlobalAmount} {PRdata>/PurchaseReq/GlobalKey})"
+			state="None"/>
+        <ObjectStatus id="_IDGenObjectStatus2"
+			class="sapUiSmallMarginBottom"
+			text="{i18n>creator} : {PRdata>/PurchaseReq/CreatorName} {PRdata>/PurchaseReq/CreatorSurname}"
+			state="None" />
+        <ObjectStatus id="_IDGenObjectStatus3"
+			class="sapUiSmallMarginBottom"
+			text="{i18n>ApprovalLevel} : {PRdata>/PurchaseReq/approvalLevel}"
+			state="None" />
+        </statuses>
+        <ObjectAttribute id="_IDGenObjectAttribute3" title="{i18n>Company}"> 
+        <customContent>
+			<Text id="_IDGenText3" class="boldText" text="{PRdata>/PurchaseReq/CompanyCodeDescription} ({PRdata>/PurchaseReq/CompanyCode})"/>
+		</customContent> 
+        </ObjectAttribute>
+        <!-- text="{PRdata>CompanyCodeDescription} ({PRdata>CompanyCode})" /> -->
+        <ObjectAttribute id="_IDGenObjectAttribute4" title="{i18n>Project}">
+        <customContent>
+			<Text id="_IDGenText4" class="boldText" text="{PRdata>/PurchaseReq/ProjectDescription} ({PRdata>/PurchaseReq/Project})"/>
+		</customContent> 
+        </ObjectAttribute>
+        <ObjectAttribute id="_IDGenObjectAttribute6" title="{i18n>AcuAmount}">
+        <customContent>
+			<Text id="_IDGenText5" class="boldText" text="{PRdata>/PurchaseReq/AcuAmount} {PRdata>/PurchaseReq/AcuAmountCkey}"/>
+		</customContent> 
+        </ObjectAttribute>
+        <!-- text="{PRdata>ProjectDescription} ({PRdata>Project})" /> -->
+        <ObjectAttribute id="_IDGenObjectAttribute5" title="{i18n>WBSElement}">
+        <customContent>
+			<Text id="_IDGenText6" class="boldText" text="{PRdata>/PurchaseReq/WBSElementDescription} ({PRdata>/PurchaseReq/WBSElement})"/>
+		</customContent> 
+        </ObjectAttribute>
+        <!-- <Label text="Not active Object Attribute with title and text" design="Bold" class="sapUiSmallMarginTop"/> -->
+		<ObjectAttribute id="_IDGenObjectAttribute1" text="{= ${PRdata>/PurchaseReq/ItemCategory} !== 9 ? 'Material' : 'Service'} ({PRdata>/PurchaseReq/ItemCategory})"/>
+        <!-- <customContent>
+			<Text class="boldText" text="{PRdata>MaterialDescription} ({PRdata>MaterialNumber})"/>
+		</customContent> 
+        </ObjectAttribute> -->
+        <!-- text="{PRdata>MaterialDescription} ({PRdata>MaterialNumber})" />  -->
+    </ObjectHeader>
+    <IconTabBar
+		id="idIconTabBarMulti"
+		expanded="{device>/isNoPhone}"
+		class="sapUiResponsiveContentPadding">
+		<items>
+			<IconTabFilter id="_IDGenIconTabFilter3" icon="sap-icon://documents" key="notes">
+            <Panel id="_IDGenPanel1">
+                <l:HorizontalLayout id="_IDGenHorizontalLayout1" class="sapUiContentPadding" >
+                    <core:Icon id="_IDGenIcon1" src="sap-icon://chain-link" size="300%"/>
+				    <Link id="_IDGenLink1" text="{PRdata>/PurchaseReq/TXTLN}" target="_blank" href="{PRdata>/PurchaseReq/TXTLN}"/>
+                </l:HorizontalLayout>
+            </Panel>
+            <Panel id="_IDGenPanel2">
+                <l:HorizontalLayout id="_IDGenHorizontalLayout2" class="sapUiContentPadding" >
+                    <core:Icon id="_IDGenIcon2" src="sap-icon://pushpin-on" size="300%"/>
+                    <Text id="_IDGenText2" text="{PRdata>/PurchaseReq/TextLine}" />
+                </l:HorizontalLayout>
+            </Panel>
+			</IconTabFilter>
+
+			<IconTabFilter id="_IDGenIconTabFilter5" icon="sap-icon://notes" key="Notes">
+			<Panel id="_IDGenPanel3" class="sapUiContentPadding">
+			<FeedInput id="_IDGenFeedInput1" post="onPost" showIcon="true" />	
+			<List id="idCommentsList" noDataText="{i18n>ObjectCommentNoData}" showSeparators="Inner" items="{path: 'PRdata>/PurchaseReq/comments'}">
+            <FeedListItem id="_IDGenFeedListItem1"
+                info="{PRdata>user}"
+                text="{PRdata>comments}"/>
+        	</List>
+			</Panel>
+			</IconTabFilter>
+
+			<IconTabFilter id="_IDGenIconTabFilter4" icon="sap-icon://approvals" key="logs">
+            <Table id="idLogsTable" items="{path: 'PRdata>/PurchaseReq/logs'}">
+               <columns>
+                    <Column>
+                        <Text text="{i18n>approver}"/>
+					</Column>
+					<Column>
+                        <Text text="{i18n>Level}"/>
+					</Column>
+					<Column>
+                        <Text text="{i18n>timestamp}"/>
+                    </Column>
+               </columns>
+               <items>
+			        <ColumnListItem vAlign="Middle">
+				        <cells>
+                            <Text text="{PRdata>approver}"/>
+                            <Text text="{PRdata>level}"/>
+                            <Text text="{PRdata>timestamp}"/>
+                        </cells>
+			        </ColumnListItem>
+		       </items>
+            </Table>
+			</IconTabFilter>
+			
+			<IconTabFilter id="_IDGenIconTabFilter1" icon="sap-icon://header" key="prData">
+				<f:Form id="FormDisplay354" editable="false">
+			        <f:layout>
+			        <f:ResponsiveGridLayout id="_IDGenResponsiveGridLayout1"
+			            labelSpanXL="3"
+			            labelSpanL="3"
+			            labelSpanM="3"
+			            labelSpanS="12"
+			            adjustLabelSpan="false"
+			            emptySpanXL="4"
+			            emptySpanL="4"
+			            emptySpanM="4"
+			            emptySpanS="0"
+			            columnsXL="1"
+			            columnsL="1"
+			            columnsM="1"
+			            singleContainerFullSize="false" />
+			        </f:layout>
+			            <f:formContainers>
+			                <f:FormContainer id="_IDGenFormContainer1">
+			                    <f:formElements>
+			                        <f:FormElement id="_IDGenFormElement1" label="{i18n>Quantity}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/Quantity} {PRdata>/PurchaseReq/UOM}" class="boldText" id="quantityText"  />
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDGenFormElement2" label="{i18n>UnitPriceinPurchaseRequisition}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/Price} {PRdata>/PurchaseReq/CurrencyKey}" class="boldText" id="priceText"  />
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDGenFormElement3" label="{i18n>PurchaseRequisitionDate}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/PRdate}" id="prDateText" class="boldText"/>
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDGenFormElement4" label="{i18n>PurchaseRequisitionReleaseDate}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/ReleaseDate}" id="prReqRelDate" class="boldText"/>
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDGenFormElement5" label="{i18n>ItemDeliveryDate}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/ItemDeliveryDate}" id="itemDelDate" class="boldText"/>
+			                            </f:fields>
+			                        </f:FormElement>
+                                    <f:FormElement id="_IDGenFormElement9" label="{i18n>MaterialGroup}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/MaterialGroupDescription} ({PRdata>/PurchaseReq/MaterialGroup})" class="boldText" id="itemMatgrp"  />
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDGenFormElement6" label="{i18n>PurchasingOrganization}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/PurchasingOrganizationDescription} ({PRdata>/PurchaseReq/PurchasingOrganization})" class="boldText" id="prOrg"  />
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDGenFormElement7" label="{i18n>BusinessArea}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/BusinessAreaDescription} ({PRdata>/PurchaseReq/BusinessArea})" class="boldText" id="bArea"  />
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDGenFormElement8" label="{i18n>Plant}">
+			                            <f:fields>
+			                                <Text text="{PRdata>/PurchaseReq/PlantDescription} ({PRdata>/PurchaseReq/Plant})" id="plant" class="boldText"/>
+			                            </f:fields>
+			                        </f:FormElement>
+			                        <f:FormElement id="_IDMaterial" label="Material/Service">
+			                            <f:fields>
+			                                <Text text="{PRdata>MaterialDescription} ({PRdata>/PurchaseReq/MaterialNumber})" id="Material" class="boldText"/>
+			                            </f:fields>
+			                        </f:FormElement>
+			                    </f:formElements>
+			                </f:FormContainer>
+			            </f:formContainers>
+                </f:Form>
+			</IconTabFilter>
+
+			<IconTabFilter id="_IDGenIconTabFilter2" icon="sap-icon://hint" key="information">
+				<f:Form id="FormDisplay355" editable="false">
+			        <f:layout>
+			        <f:ResponsiveGridLayout id="_IDGenResponsiveGridLayout2"
+			            labelSpanXL="3"
+			            labelSpanL="3"
+			            labelSpanM="3"
+			            labelSpanS="12"
+			            adjustLabelSpan="false"
+			            emptySpanXL="4"
+			            emptySpanL="4"
+			            emptySpanM="4"
+			            emptySpanS="0"
+			            columnsXL="1"
+			            columnsL="1"
+			            columnsM="1"
+			            singleContainerFullSize="true" />
+			        </f:layout>
+			        <f:formContainers>
+			            <f:FormContainer id="_IDGenFormContainer2">
+			                <f:formElements>
+			                    <!-- <f:FormElement id="_IDGenFormElement10" label="{i18n>ItemCategoryinPurchasingDocument}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/ItemCategoryDescription} ({PRdata>/PurchaseReq/ItemCategory})" class="boldText" id="itemCat"/>
+			                        </f:fields>
+			                    </f:FormElement> -->
+			                    <f:FormElement id="_IDGenFormElement11" label="{i18n>AccountAssignmentCategory}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/AccountAssignmentCategoryDescription} ({PRdata>/PurchaseReq/AccountAssignmentCategory})" class="boldText" id="aaCatText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+			                    <f:FormElement id="_IDGenFormElement12" label="{i18n>PurchasingGroup}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/PurchasingGroupDescription} ({PRdata>/PurchaseReq/PurchasingGroup})" id="prGroupText" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+			                    <f:FormElement id="_IDGenFormElement13" label="{i18n>PurchaseRequisitionDocumentType}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/PRDocTypeDesc} ({PRdata>/PurchaseReq/PRDocType})" id="prDocTypeDesc" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+			                    <f:FormElement id="_IDGenFormElement14" label="{i18n>GLAccount}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/GLaccount}" id="GLaccounttext" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+			                    <!-- <f:FormElement id="_IDGenFormElement15" label="WBS Element">
+			                        <f:fields>
+			                            <Text text="{PRdata>/WBSElementDescription} ({PRdata>/WBSElement})" id="wbsElement" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement> -->
+			                    <f:FormElement id="_IDGenFormElement16" label="{i18n>CostCenter}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/CostCenterDescription} ({PRdata>/PurchaseReq/CostCenter})" id="cCenter" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement17" label="{i18n>WBSType}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/WBSType}" id="wbsType" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement18" label="{i18n>ProductionOrder}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/ProdOrd}" id="prodOrder" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement19" label="{i18n>SalesDocumentNumber}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/SalesDocNumb}" id="salesDocNum" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement20" label="{i18n>SalesDocumentNumberItem}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/SalesDocItem}" id="numItem" class="boldText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+			                </f:formElements>
+			            </f:FormContainer>
+			        </f:formContainers>
+			    </f:Form>
+			</IconTabFilter>
+	</items>
+</IconTabBar>
+</content>
+</Page>
+</mvc:View>

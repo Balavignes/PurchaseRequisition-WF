@@ -1,0 +1,11 @@
+{
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/backend(.*)$",
+      "target": "$1",
+      "destination": "StagingOnPremiseBackend",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}

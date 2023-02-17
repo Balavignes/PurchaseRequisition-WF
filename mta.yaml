@@ -1,0 +1,131 @@
+_schema-version: "3.2"
+ID: PR-1
+version: 0.0.1
+modules:
+- name: workflow-module
+  type: com.sap.application.content
+  path: workflow-module
+  requires:
+  - name: wm_workflow
+    parameters:
+      content-target: true
+- name: PR-1-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: PR-1-destination-service
+    parameters:
+      content-target: true
+  - name: PR-1_html_repo_host
+    parameters:
+      service-key:
+        name: PR-1_html_repo_host-key
+  - name: uaa_comaucloil_cap
+    parameters:
+      service-key:
+        name: uaa_PR-1-key
+  parameters:
+    content:
+      subaccount:
+        destinations:
+        - Name: ComaudevPR_1_PR_1_html_repo_host
+          ServiceInstanceName: PR-1-html5-app-host-service
+          ServiceKeyName: PR-1_html_repo_host-key
+          sap.cloud.service: ComaudevPR-1
+        - Authentication: OAuth2UserTokenExchange
+          Name: ComaudevPR_1_uaa_PR_1
+          ServiceInstanceName: PR-1-xsuaa-service
+          ServiceKeyName: uaa_PR-1-key
+          sap.cloud.service: ComaudevPR-1
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: PR-1-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: PR-1_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - workflowuimodule.zip
+      name: workflowuimodule
+      target-path: resources/
+- name: workflowuimodule
+  type: html5
+  path: workflow-ui-module
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: Approval
+  type: nodejs
+  path: ApprovalApi
+  requires:
+    - name: comaucloil_cap-db
+      properties:
+        TARGET_CONTAINER: '~{hdi-container-name}'
+    - name: PR-1-destination-service
+      parameters:
+        content-target: true
+    - name: uaa_comaucloil_cap
+    - name: PR_connectivity
+resources:
+- name: comaucloil_cap-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    config:
+      schema: COMAUCLOIL_QAS
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-container-name: ${service-name}
+    hdi-service-name: ${service-name}
+- name: wm_workflow
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: workflow
+    service-plan: standard
+- name: PR-1-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        subaccount:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: PR-1-destination-service
+    service-plan: lite
+- name: PR-1_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: PR-1-html5-app-host-service
+    service-plan: app-host
+- name: PR_connectivity
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: connectivity
+    service-plan: lite
+- name: uaa_comaucloil_cap
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: PR-1-xsuaa-service
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo

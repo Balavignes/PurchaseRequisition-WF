@@ -1,0 +1,5 @@
+{
+    "xsappname": "prwfxssecurity",
+    "tenant-mode": "dedicated",
+    "description": "Purchase requisition with App Router and XSUAA"
+}

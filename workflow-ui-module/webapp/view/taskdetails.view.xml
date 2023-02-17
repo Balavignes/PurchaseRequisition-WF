@@ -1,0 +1,179 @@
+<mvc:View controllerName="workflowuimodule.controller.taskdetails" 
+xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:uxap="sap.uxap" 
+displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout.form">
+    <App id="app">
+        <pages>
+            <Page id="__page0" showHeader="false" showFooter="false">
+                <content>
+    <uxap:ObjectPageLayout id="ObjectPageLayout"
+		showTitleInHeaderContent="false"
+		showEditHeaderButton="false"
+		upperCaseAnchorBar="false">
+    <uxap:headerTitle>
+		<uxap:ObjectPageHeader id="_IDGenObjectPageHeader1" objectTitle="{taskDetails>/Material}">
+		</uxap:ObjectPageHeader>
+	</uxap:headerTitle>
+    <uxap:headerContent>
+		<ObjectAttribute title="" text="{taskDetails>/InstanceID}"/>
+	</uxap:headerContent>
+    <uxap:sections>
+		<uxap:ObjectPageSection titleUppercase="false" id="InfoSection" title="Information">
+			<uxap:subSections>
+				<uxap:ObjectPageSubSection id="InfoSectionSS1">
+					<uxap:blocks>
+                        <f:Form id="FormDisplay354" editable="false">
+			            <f:layout>
+				    <f:ResponsiveGridLayout
+					labelSpanXL="3"
+					labelSpanL="3"
+					labelSpanM="3"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="4"
+					emptySpanL="4"
+					emptySpanM="4"
+					emptySpanS="0"
+					columnsXL="1"
+					columnsL="1"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer>
+					<f:formElements>
+						<f:FormElement label="MaterialGroup">
+							<f:fields>
+								<Text text="{taskDetails>/Material}" id="nameText"  />
+							</f:fields>
+						</f:FormElement>
+	    				</f:formElements>
+    				</f:FormContainer>
+		    	</f:formContainers>
+	    	</f:Form>
+					</uxap:blocks>
+				</uxap:ObjectPageSubSection>
+			</uxap:subSections>
+		</uxap:ObjectPageSection>
+        <uxap:ObjectPageSection titleUppercase="false" id="DeliverySection" 
+          title="Delivery on {taskDetails>/details/DeliveryDate}">
+			<uxap:subSections>
+				<uxap:ObjectPageSubSection id="DeliverySectionSS1">
+					<uxap:blocks>
+                        <f:Form id="DeliveryForm" editable="false">
+			            <f:layout>
+				    <f:ResponsiveGridLayout
+					labelSpanXL="3"
+					labelSpanL="3"
+					labelSpanM="3"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="4"
+					emptySpanL="4"
+					emptySpanM="4"
+					emptySpanS="0"
+					columnsXL="1"
+					columnsL="1"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer>
+					<f:formElements>
+						<f:FormElement label="Plant">
+							<f:fields>
+								<Text text="{taskDetails>/details/Plant}" id="plantText"  />
+							</f:fields>
+						</f:FormElement>
+                        <f:FormElement label="Address">
+							<f:fields>
+								<Link target="_blank" href="{taskDetails>/details/Address}" text="{taskDetails>/details/Address}" id="addressText"  />
+							</f:fields>
+						</f:FormElement>
+	    				</f:formElements>
+    				</f:FormContainer>
+		    	</f:formContainers>
+	    	</f:Form>
+					</uxap:blocks>
+				</uxap:ObjectPageSubSection>
+			</uxap:subSections>
+		</uxap:ObjectPageSection>
+        <uxap:ObjectPageSection titleUppercase="false" id="NotesSection" 
+          title="Notes">
+            <uxap:subSections>
+                <uxap:ObjectPageSubSection>
+                    <uxap:blocks>
+                        <List id="notesList" items="{taskDetails>/details/Notes}">
+			             <StandardListItem title="{taskDetails>Actions}" 
+                            description="{taskDetails>Author}" icon="sap-icon://employee"/>
+                        </List>
+                    </uxap:blocks>
+                </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+        </uxap:ObjectPageSection>
+         <uxap:ObjectPageSection titleUppercase="false" id="AASection" 
+          title="Account Assignment">
+            <uxap:subSections>
+                <uxap:ObjectPageSubSection>
+                    <uxap:blocks>
+                        <Table items="{taskDetails>/Account Assignment}">
+                            <columns>
+                                <Column>
+                                  <Text text="Objects" />  
+                                </Column>
+                                <Column>
+                                  <Text text="G/L account" />  
+                                </Column>
+                                <Column>
+                                  <Text text="Share" />  
+                                </Column>
+                             </columns>
+                             <items>
+			                 <ColumnListItem>
+				                <cells>
+                                    <ObjectIdentifier
+						                title="{taskDetails>object}"
+						                text="{taskDetails>object type}"/>
+                                    <Text text="{taskDetails>GL Account}"/>
+                                    <Text text="{taskDetails>Share}"/>
+                                </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </uxap:blocks>
+                </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+        </uxap:ObjectPageSection>
+        <uxap:ObjectPageSection titleUppercase="false" id="PCSection" 
+          title="Pricing Conditions">
+            <uxap:subSections>
+                <uxap:ObjectPageSubSection>
+                    <uxap:blocks>
+                        <Table items="{taskDetails>/Pricing Conditions}">
+                            <columns>
+                                <Column>
+                                  <Text text="Description" />  
+                                </Column>
+                                <Column>
+                                  <Text text="Price" />  
+                                </Column>
+                             </columns>
+                             <items>
+			                 <ColumnListItem>
+				                <cells>
+                                    <Text text="{taskDetails>Description}"/>
+                                    <Text text="{taskDetails>Price}"/>
+                                </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </uxap:blocks>
+                </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+        </uxap:ObjectPageSection>
+    </uxap:sections>
+    </uxap:ObjectPageLayout>
+                </content>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>
