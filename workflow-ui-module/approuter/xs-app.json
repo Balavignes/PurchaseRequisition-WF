@@ -4,8 +4,7 @@
     {
       "source": "^/backend(.*)$",
       "target": "$1",
-      "destination": "StagingOnPremiseBackend",
-      "authenticationType": "xsuaa"
+      "destination": "StagingOnPremiseBackendCOQ"
     }
   ]
 }

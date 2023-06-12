@@ -39,7 +39,7 @@ app.get('/plant', async(req, res) => {
 		if(error) {
 			return console.error("error while creating connection :" + error);
 		}  
-		client.exec('SELECT * FROM "COMAUCLOIL"."SAP_COM_COMAU_ENTITIES_PLANT" WHERE "PLANT" = ?', 
+		client.exec('SELECT * FROM "COMAUCLOIL_QAS"."SAP_COM_COMAU_ENTITIES_PLANT" WHERE "PLANT" = ?', 
 		    [req.query.plant],
 			(err, result) => {
 			   if (err) {
@@ -59,19 +59,70 @@ app.post('/storeapprover', async(req, res) => {
 	try{
 		console.log("Approval API called");
 		var hanaConfig = xenv.cfServiceCredentials({ tag: 'hana' });
+        var wfInstance = "";
 		console.log("***Update Query***");
 		hdbext.createConnection(hanaConfig, function(error, client) {
 		if(error) {
 			return console.error("error while creating connection :" + error);
 		}  
 		console.log("Approve body :" + JSON.stringify(req.body));
-		client.exec('UPDATE "COMAUCLOIL"."SAP_COM_COMAU_ENTITIES_PURCHASEREQUISITION" SET "CURRENTAPPROVER" = ?, "CURRENTLEVEL" = ? WHERE "PURCHASEREQUISITION" = ? AND "ITEMNUMBER" = ? AND "INSTANCE_ID" = ?',
-			[req.body.approver, req.body.level, req.body.PRId, req.body.ItemNr, req.body.WorkflowInstance],
-			(err) => {
-			   if (err) {
-					console.log("error on update:" + err);
-				}
-			});
+        // This query should give us the latest workflow instance created in this table for this PRid and Item nr
+        client.exec('SELECT * FROM "COMAUCLOIL_QAS"."SAP_COM_COMAU_ENTITIES_PURCHASEREQUISITION" WHERE "PURCHASEREQUISITION" = ? AND "ITEMNUMBER" = ? AND "REL_IND" = ? AND "REJ_IND" = ? AND "CHANGE_IND" = ? AND "CANCEL_IND" = ?',
+        [req.body.PRId, parseInt(req.body.ItemNr), "", "", "", ""],
+        (err, result) => {
+           if (err) {
+                console.log("error on get:" + err);
+            } else {
+                console.log("result to update" + JSON.stringify(result));
+                wfInstance = result[0].INSTANCE_ID;
+                relInd = req.body.approver == "" ? "X" : "";
+                console.log("The potential latest workflow instance is " + wfInstance);
+                client.exec('UPDATE "COMAUCLOIL_QAS"."SAP_COM_COMAU_ENTITIES_PURCHASEREQUISITION" SET "CURRENTAPPROVER" = ?, "CURRENTLEVEL" = ?, "REL_IND" = ? WHERE "PURCHASEREQUISITION" = ? AND "ITEMNUMBER" = ? AND "INSTANCE_ID" = ?',
+                    [req.body.approver, req.body.level, relInd, req.body.PRId, req.body.ItemNr, wfInstance],
+                    (err) => {
+                       if (err) {
+                            console.log("error on update:" + err);
+                        }
+                    });
+                }
+            });
+		});
+		res.sendStatus(200);
+	} catch(err){
+		console.log(err);
+	}
+})
+
+app.post('/RejectTask', async(req, res) => { 
+	try{
+		console.log("Reject API Called");
+		var hanaConfig = xenv.cfServiceCredentials({ tag: 'hana' });
+        var wfInstance = "";
+		console.log("***Update Query for reject***");
+		hdbext.createConnection(hanaConfig, function(error, client) {
+		if(error) {
+			return console.error("error while creating connection :" + error);
+		}  
+		console.log("Approve body :" + JSON.stringify(req.body));
+        // This query should give us the latest workflow instance created in this table for this PRid and Item nr
+        client.exec('SELECT * FROM "COMAUCLOIL_QAS"."SAP_COM_COMAU_ENTITIES_PURCHASEREQUISITION" WHERE "PURCHASEREQUISITION" = ? AND "ITEMNUMBER" = ? AND "REL_IND" = ? AND "REJ_IND" = ? AND "CHANGE_IND" = ? AND "CANCEL_IND" = ?',
+        [req.body.PRId, parseInt(req.body.ItemNr), "", "", "", ""],
+        (err, result) => {
+            if (err) {
+                console.log("error on get:" + err);
+            } else {
+                console.log("result to update" + JSON.stringify(result));
+                wfInstance = result[0].INSTANCE_ID;
+                console.log("The potential latest workflow instance is " + wfInstance);
+                client.exec('UPDATE "COMAUCLOIL_QAS"."SAP_COM_COMAU_ENTITIES_PURCHASEREQUISITION" SET "REJ_IND" = ? WHERE "PURCHASEREQUISITION" = ? AND "ITEMNUMBER" = ? AND "INSTANCE_ID" = ?',
+                    ["X", req.body.PRId, parseInt(req.body.ItemNr), wfInstance],
+                    (err) => {
+                       if (err) {
+                            console.log("error on update:" + err);
+                        }
+                    });        
+                }
+            });
 		});
 		res.sendStatus(200);
 	} catch(err){
@@ -81,12 +132,19 @@ app.post('/storeapprover', async(req, res) => {
 
 app.get('/ApproveReject', async(req, res) => { 
 	// if(req.query.destination == "COQ")
-    var sDestinationName = "SAPCOQ_CLONING";
+    if(req.query.Destination == "COP") {
+        var sDestinationName = "SAPCOQBackground";
+        var destinationtarget = "backend"; 
+    } else if(req.query.Destination == "CAP") {
+        var sDestinationName = "SAPCAQBackground";
+        var destinationtarget = "CAQ"
+    }
+    // var sDestinationName = "SAPCOQBackground";
 	var histRes = {};
 	var Reject = '';
 	var Release = '';
 	const Status = (req.query.approvalStatus === 'true');
-	const LastApproval = (req.query.nextApprover === " ");
+	const LastApproval = (req.query.nextApprover === "");
 	console.log("Approval Status :" + req.query.approvalStatus);
 	console.log("next approver :" + req.query.nextApprover);
 	console.log(LastApproval);
@@ -120,18 +178,37 @@ app.get('/ApproveReject', async(req, res) => {
         });
     }).then(async (result)=>{
         console.log("approval reject reached here too");
-		var PRId = "12345";
-		var ItemNr = "1";
-		var URL = "https://p001-prapp-comau-qas.cfapps.eu10.hana.ondemand.com/backend/sap/opu/odata/sap/ZRMM_F_IFC_REJPR_SD_SRV/OutTabSet(Zuserid='X',Zpureq='" + PRId + "',Zpureqitem='" + ItemNr + "',Zrelease='" + Release + "',Zreject='" + Reject + "',Znote='ciao')";
+        var destination = JSON.parse(result);
+        console.log("destn confgn " + JSON.stringify(destination.destinationConfiguration));
+        var user = destination.destinationConfiguration.User;
+        var password = destination.destinationConfiguration.Password
+		var PRId = req.query.prId.padStart(10, '0'); //change dynamic
+		var ItemNr = req.query.ItemNr; // change to dynamic
+        var userId = req.query.UserId;
+        var level = req.query.Level;
+		var URL = "https://p001-prapp-comau-qas.cfapps.eu10.hana.ondemand.com/" + destinationtarget + "/sap/opu/odata/sap/ZRMM_F_IFC_REJPR_SD_SRV/OutTabSet(Zuserid='" + userId + "',Zpureq='" + PRId + "',Zpureqitem='" + ItemNr + "',Zrelease='" + Release + "',Zreject='" + Reject + "',Znote='"+ level +"')";
 		console.log("url:" + URL);
         approvalRes = await axios.get(URL, {  
             auth: {
-                username: 'F88068C_PRJ',
-                password: 'Gennaio2023'
+                username: user,
+                password: password
             }
         }).catch(err => {
             console.log("Error on approval or reject:" + err.message);
         });
+        if(Release == 'X') {
+            Release = ''
+            var URL = "https://p001-prapp-comau-qas.cfapps.eu10.hana.ondemand.com/" + destinationtarget + "/sap/opu/odata/sap/ZRMM_F_IFC_REJPR_SD_SRV/OutTabSet(Zuserid='" + userId + "',Zpureq='" + PRId + "',Zpureqitem='" + ItemNr + "',Zrelease='" + Release + "',Zreject='" + Reject + "',Znote='"+ level +"')";
+		    console.log("url:" + URL);
+            approvalRes = await axios.get(URL, {  
+                auth: {
+                    username: user,
+                    password: password
+                }
+            }).catch(err => {
+                console.log("Error on approval or reject:" + err.message);
+            });
+        }
 		// approvalRes.data.d.results.forEach(element => {
 		// 	delete element['__metadata']
 		// });
@@ -143,8 +220,13 @@ app.get('/ApproveReject', async(req, res) => {
 
 
 app.get('/approvalHistory', async(req, res) => { 
-	// if(req.query.destination == "COQ")
-    var sDestinationName = "SAPCOQ_CLONING";
+	if(req.query.Destination == "COP") {
+        var sDestinationName = "SAPCOQBackground";
+        var destinationtarget = "backend"; 
+    } else if(req.query.Destination == "CAP") {
+        var sDestinationName = "SAPCAQBackground";
+        var destinationtarget = "CAQ"
+    }
 	var histRes = {};
     request({
         uri : uaa_service.url + '/oauth/token',
@@ -159,7 +241,7 @@ app.get('/approvalHistory', async(req, res) => {
         }
     }).then((data) => {
         const token = JSON.parse(data).access_token;
-        console.log("reached here :" + token);
+        console.log("approval hist reached here :" + token);
         return request({
             uri: dest_service.uri + '/destination-configuration/v1/destinations/' + sDestinationName,
             headers: {
@@ -167,12 +249,24 @@ app.get('/approvalHistory', async(req, res) => {
             }
         });
     }).then(async (result)=>{
+        // console.log("approval history reached here too");
+		// var PRId = "12345"; //make it dynamic
+		// var ItemNr = "1";//make it dynamic
         console.log("approval history reached here too");
-		var PRId = "12345";
-		var ItemNr = "1";
-		var URL = "https://p001-prapp-comau-qas.cfapps.eu10.hana.ondemand.com/backend/sap/opu/odata/sap/ZGW_SCP_PRWF_HIST_SRV/OutTabSet?$filter=Zparametr eq '" + "A" + "' and PurchaseRequisition eq '"+ PRId + "' and PrItemNumber eq '" + ItemNr +"'";
+        var destination = JSON.parse(result);
+        console.log("destn confgn " + JSON.stringify(destination.destinationConfiguration));
+        var user = destination.destinationConfiguration.User;
+        var password = destination.destinationConfiguration.Password
+		var PRId = req.query.prId; //change dynamic
+		var ItemNr = req.query.ItemNr; // change to dynamic
+		var URL = "https://p001-prapp-comau-qas.cfapps.eu10.hana.ondemand.com/" + destinationtarget + "/sap/opu/odata/sap/ZGW_SCP_PRWF_HIST_SRV/OutTabSet?$filter=Zparametr eq '" + "A" + "' and PurchaseRequisition eq '"+ PRId + "' and PrItemNumber eq '" + ItemNr +"'";
 		console.log("url:" + URL);
-        histRes = await axios.get(URL).catch(err => {
+        histRes = await axios.get(URL, {  
+            auth: {
+                username: user,
+                password: password
+            }
+        }).catch(err => {
             console.log("Error on approval history:" + err.message);
         });
 		histRes.data.d.results.forEach(element => {
@@ -185,7 +279,14 @@ app.get('/approvalHistory', async(req, res) => {
 
 app.get('/Comments', async(req, res) => { 
 	// if(req.query.destination == "COQ")
-    var sDestinationName = "SAPCOQ_CLONING";
+    // var sDestinationName = "SAPCOQ_CLONING";
+    if(req.query.Destination == "COP") {
+        var sDestinationName = "SAPCOQBackground";
+        var destinationtarget = "backend"; 
+    } else if(req.query.Destination == "CAP") {
+        var sDestinationName = "SAPCAQBackground";
+        var destinationtarget = "CAQ"
+    }
 	var commentRes = {};
     request({
         uri : uaa_service.url + '/oauth/token',
@@ -208,15 +309,22 @@ app.get('/Comments', async(req, res) => {
             }
         });
     }).then(async (result)=>{
+        // console.log("comment api reached here too");
+		// var PRId = "12345";//make it dynamic
+		// var ItemNr = "1";//make it dynamic
         console.log("comment api reached here too");
-		var PRId = "12345";
-		var ItemNr = "1";
-		var URL = "https://p001-prapp-comau-qas.cfapps.eu10.hana.ondemand.com/backend/sap/opu/odata/sap/ZGW_SCP_PRWF_HIST_SRV/OutTabSet?$filter=Zparametr eq '" + "C" + "' and PurchaseRequisition eq '"+ PRId + "' and PrItemNumber eq '" + ItemNr +"'";
+        var destination = JSON.parse(result);
+        console.log("destn confgn " + JSON.stringify(destination.destinationConfiguration));
+        var user = destination.destinationConfiguration.User;
+        var password = destination.destinationConfiguration.Password
+		var PRId = req.query.prId; //change dynamic
+		var ItemNr = req.query.ItemNr; // change to dynamic
+		var URL = "https://p001-prapp-comau-qas.cfapps.eu10.hana.ondemand.com/"+destinationtarget+"/sap/opu/odata/sap/ZGW_SCP_PRWF_HIST_SRV/OutTabSet?$filter=Zparametr eq '" + "C" + "' and PurchaseRequisition eq '"+ PRId + "' and PrItemNumber eq '" + ItemNr +"'";
 		console.log("url:" + URL);
         commentRes = await axios.get(URL, {  
             auth: {
-                username: 'F88068C_PRJ',
-                password: 'Gennaio2023'
+                username: user,
+                password: password
             }
         }).catch(err => {
             console.log("Error on comment api:" + err.message);

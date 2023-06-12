@@ -67,14 +67,14 @@ modules:
   type: nodejs
   path: ApprovalApi
   requires:
-    - name: comaucloil_cap-db
-      properties:
-        TARGET_CONTAINER: '~{hdi-container-name}'
-    - name: PR-1-destination-service
-      parameters:
-        content-target: true
-    - name: uaa_comaucloil_cap
-    - name: PR_connectivity
+  - name: comaucloil_cap-db
+    properties:
+      TARGET_CONTAINER: ~{hdi-container-name}
+  - name: PR-1-destination-service
+    parameters:
+      content-target: true
+  - name: uaa_comaucloil_cap
+  - name: PR_connectivity
 resources:
 - name: comaucloil_cap-db
   type: com.sap.xs.hdi-container

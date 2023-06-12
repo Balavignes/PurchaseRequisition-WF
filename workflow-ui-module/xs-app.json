@@ -8,6 +8,11 @@
       "destination": "getapprover"
     },
     {
+      "source": "^/RejectTask",
+      "target": "/RejectTask",
+      "destination": "getapprover"
+    },
+    {
       "source": "^/ApproveReject",
       "target": "/ApproveReject",
       "destination": "getapprover"
@@ -63,8 +68,15 @@
     {
       "source": "^/backend(.*)$",
       "target": "$1",
-      "destination": "StagingOnPremiseBackend",
-      "authenticationType": "xsuaa"
-    }
+      "destination": "StagingOnPremiseBackendCOQ"
+    },
+
+    {
+      "source": "^/CAQ(.*)$",
+      "target": "$1",
+      "destination": "StagingOnPremiseBackendCAQ"
+  }
   ]
 }
+
+

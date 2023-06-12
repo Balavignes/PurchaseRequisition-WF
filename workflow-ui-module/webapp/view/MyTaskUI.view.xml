@@ -12,14 +12,14 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
     <content>
     <ObjectHeader id="_IDGenObjectHeader1"
 		    binding="{PRdata>/PurchaseReq}"
-		    title="{PRdata>Purchaserequisition} - {PRdata>ItemNr}"
-		    number="{PRdata>Amount} {PRdata>CurrencyKey}"
+		    title="{PRdata>PurchaseRequisition} - {path:'PRdata>PrItemNumber', formatter:'.trimItemNumber'}"
+		    number="{PRdata>LocalTotalAmount} {PRdata>LocalCurrencyKey}"
             numberState="Success"
 		    class="sapUiResponsivePadding--header" >
         <statuses>
         <ObjectStatus id="_IDGenObjectStatus1"
 			class="sapUiSmallMarginBottom"
-			text="({PRdata>/PurchaseReq/GlobalAmount} {PRdata>/PurchaseReq/GlobalKey})"
+			text="({PRdata>/PurchaseReq/GlobalTotalAmount} {PRdata>/PurchaseReq/GlobalCurrencyKey})"
 			state="None"/>
         <ObjectStatus id="_IDGenObjectStatus2"
 			class="sapUiSmallMarginBottom"
@@ -32,28 +32,28 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
         </statuses>
         <ObjectAttribute id="_IDGenObjectAttribute3" title="{i18n>Company}"> 
         <customContent>
-			<Text id="_IDGenText3" class="boldText" text="{PRdata>/PurchaseReq/CompanyCodeDescription} ({PRdata>/PurchaseReq/CompanyCode})"/>
+			<Text id="_IDGenText3" class="boldText" text="{PRdata>/PurchaseReq/CompanyCodeDesc} ({PRdata>/PurchaseReq/CompanyCode})"/>
 		</customContent> 
         </ObjectAttribute>
         <!-- text="{PRdata>CompanyCodeDescription} ({PRdata>CompanyCode})" /> -->
         <ObjectAttribute id="_IDGenObjectAttribute4" title="{i18n>Project}">
         <customContent>
-			<Text id="_IDGenText4" class="boldText" text="{PRdata>/PurchaseReq/ProjectDescription} ({PRdata>/PurchaseReq/Project})"/>
+			<Text id="_IDGenText4" class="boldText" text="{PRdata>/PurchaseReq/ProjectDefinitionDesc} ({PRdata>/PurchaseReq/ProjectDefinition})"/>
 		</customContent> 
         </ObjectAttribute>
         <ObjectAttribute id="_IDGenObjectAttribute6" title="{i18n>AcuAmount}">
         <customContent>
-			<Text id="_IDGenText5" class="boldText" text="{PRdata>/PurchaseReq/AcuAmount} {PRdata>/PurchaseReq/AcuAmountCkey}"/>
+			<Text id="_IDGenText5" class="boldText" text="{PRdata>/PurchaseReq/AcuAmount} {PRdata>/PurchaseReq/AcuAmountCurr}"/>
 		</customContent> 
         </ObjectAttribute>
         <!-- text="{PRdata>ProjectDescription} ({PRdata>Project})" /> -->
         <ObjectAttribute id="_IDGenObjectAttribute5" title="{i18n>WBSElement}">
         <customContent>
-			<Text id="_IDGenText6" class="boldText" text="{PRdata>/PurchaseReq/WBSElementDescription} ({PRdata>/PurchaseReq/WBSElement})"/>
+			<Text id="_IDGenText6" class="boldText" text="{PRdata>/PurchaseReq/WbsElementDesc} ({PRdata>/PurchaseReq/WbsElement})"/>
 		</customContent> 
         </ObjectAttribute>
         <!-- <Label text="Not active Object Attribute with title and text" design="Bold" class="sapUiSmallMarginTop"/> -->
-		<ObjectAttribute id="_IDGenObjectAttribute1" text="{= ${PRdata>/PurchaseReq/ItemCategory} !== 9 ? 'Material' : 'Service'} ({PRdata>/PurchaseReq/ItemCategory})"/>
+		<ObjectAttribute id="_IDGenObjectAttribute1" text="{= ${PRdata>/PurchaseReq/ItemCatInPurchDoc} !== '9' ? 'Material' : 'Service'} ({PRdata>/PurchaseReq/ItemCatInPurchDoc})"/>
         <!-- <customContent>
 			<Text class="boldText" text="{PRdata>MaterialDescription} ({PRdata>MaterialNumber})"/>
 		</customContent> 
@@ -63,19 +63,20 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
     <IconTabBar
 		id="idIconTabBarMulti"
 		expanded="{device>/isNoPhone}"
-		class="sapUiResponsiveContentPadding">
+		class="sapUiResponsiveContentPadding"
+		select="onIconSelect">
 		<items>
 			<IconTabFilter id="_IDGenIconTabFilter3" icon="sap-icon://documents" key="notes">
             <Panel id="_IDGenPanel1">
                 <l:HorizontalLayout id="_IDGenHorizontalLayout1" class="sapUiContentPadding" >
                     <core:Icon id="_IDGenIcon1" src="sap-icon://chain-link" size="300%"/>
-				    <Link id="_IDGenLink1" text="{PRdata>/PurchaseReq/TXTLN}" target="_blank" href="{PRdata>/PurchaseReq/TXTLN}"/>
+				    <Link id="_IDGenLink1" text="{PRdata>/PurchaseReq/Link}" target="_blank" href="{PRdata>/PurchaseReq/Link}"/>
                 </l:HorizontalLayout>
             </Panel>
             <Panel id="_IDGenPanel2">
                 <l:HorizontalLayout id="_IDGenHorizontalLayout2" class="sapUiContentPadding" >
                     <core:Icon id="_IDGenIcon2" src="sap-icon://pushpin-on" size="300%"/>
-                    <Text id="_IDGenText2" text="{PRdata>/PurchaseReq/TextLine}" />
+                    <Text id="_IDGenText2" text="{PRdata>/PurchaseReq/Note}" />
                 </l:HorizontalLayout>
             </Panel>
 			</IconTabFilter>
@@ -83,16 +84,16 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
 			<IconTabFilter id="_IDGenIconTabFilter5" icon="sap-icon://notes" key="Notes">
 			<Panel id="_IDGenPanel3" class="sapUiContentPadding">
 			<FeedInput id="_IDGenFeedInput1" post="onPost" showIcon="true" />	
-			<List id="idCommentsList" noDataText="{i18n>ObjectCommentNoData}" showSeparators="Inner" items="{path: 'PRdata>/PurchaseReq/comments'}">
+			<List id="idCommentsList" noDataText="{i18n>ObjectCommentNoData}" showSeparators="Inner" items="{path: 'commentsModel>/'}">
             <FeedListItem id="_IDGenFeedListItem1"
-                info="{PRdata>user}"
-                text="{PRdata>comments}"/>
+                info="{commentsModel>user}"
+                text="{commentsModel>comments}"/>
         	</List>
 			</Panel>
 			</IconTabFilter>
 
 			<IconTabFilter id="_IDGenIconTabFilter4" icon="sap-icon://approvals" key="logs">
-            <Table id="idLogsTable" items="{path: 'PRdata>/PurchaseReq/logs'}">
+            <Table id="idLogsTable" items="{path: 'logsModel>/'}">
                <columns>
                     <Column>
                         <Text text="{i18n>approver}"/>
@@ -103,13 +104,17 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
 					<Column>
                         <Text text="{i18n>timestamp}"/>
                     </Column>
+					<Column>
+                        <Text text="{i18n>from}"/>
+                    </Column>
                </columns>
                <items>
 			        <ColumnListItem vAlign="Middle">
 				        <cells>
-                            <Text text="{PRdata>approver}"/>
-                            <Text text="{PRdata>level}"/>
-                            <Text text="{PRdata>timestamp}"/>
+                            <Text text="{logsModel>approver}"/>
+                            <Text text="{logsModel>level}"/>
+                            <Text text="{logsModel>timestamp}"/>
+							<Text text="{logsModel>from}"/>
                         </cells>
 			        </ColumnListItem>
 		       </items>
@@ -139,52 +144,52 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
 			                    <f:formElements>
 			                        <f:FormElement id="_IDGenFormElement1" label="{i18n>Quantity}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/Quantity} {PRdata>/PurchaseReq/UOM}" class="boldText" id="quantityText"  />
+			                                <Text text="{PRdata>/PurchaseReq/PrQuantity} {PRdata>/PurchaseReq/PrUnitOfMeasure}" class="boldText" id="quantityText"  />
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDGenFormElement2" label="{i18n>UnitPriceinPurchaseRequisition}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/Price} {PRdata>/PurchaseReq/CurrencyKey}" class="boldText" id="priceText"  />
+			                                <Text text="{PRdata>/PurchaseReq/PriceInPr} {PRdata>/PurchaseReq/LocalCurrencyKey}" class="boldText" id="priceText"  />
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDGenFormElement3" label="{i18n>PurchaseRequisitionDate}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/PRdate}" id="prDateText" class="boldText"/>
+			                                <Text text="{path:'PRdata>/PurchaseReq/PrDate', formatter:'.DateConversion'}" id="prDateText" class="boldText"/>
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDGenFormElement4" label="{i18n>PurchaseRequisitionReleaseDate}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/ReleaseDate}" id="prReqRelDate" class="boldText"/>
+			                                <Text text="{path: 'PRdata>/PurchaseReq/PrReleaseDate', formatter:'.DateConversion'}" id="prReqRelDate" class="boldText"/>
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDGenFormElement5" label="{i18n>ItemDeliveryDate}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/ItemDeliveryDate}" id="itemDelDate" class="boldText"/>
+			                                <Text text="{path: 'PRdata>/PurchaseReq/ItemDeliveryDate', formatter:'.DateConversion'}" id="itemDelDate" class="boldText"/>
 			                            </f:fields>
 			                        </f:FormElement>
                                     <f:FormElement id="_IDGenFormElement9" label="{i18n>MaterialGroup}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/MaterialGroupDescription} ({PRdata>/PurchaseReq/MaterialGroup})" class="boldText" id="itemMatgrp"  />
+			                                <Text text="{PRdata>/PurchaseReq/MaterialGroupDesc} ({PRdata>/PurchaseReq/MaterialGroup})" class="boldText" id="itemMatgrp"  />
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDGenFormElement6" label="{i18n>PurchasingOrganization}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/PurchasingOrganizationDescription} ({PRdata>/PurchaseReq/PurchasingOrganization})" class="boldText" id="prOrg"  />
+			                                <Text text="{PRdata>/PurchaseReq/PurchasingOrganizationDesc} ({PRdata>/PurchaseReq/PurchasingOrganization})" class="boldText" id="prOrg"  />
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDGenFormElement7" label="{i18n>BusinessArea}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/BusinessAreaDescription} ({PRdata>/PurchaseReq/BusinessArea})" class="boldText" id="bArea"  />
+			                                <Text text="{PRdata>/PurchaseReq/BusinessAreaDesc} ({PRdata>/PurchaseReq/BusinessArea})" class="boldText" id="bArea"  />
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDGenFormElement8" label="{i18n>Plant}">
 			                            <f:fields>
-			                                <Text text="{PRdata>/PurchaseReq/PlantDescription} ({PRdata>/PurchaseReq/Plant})" id="plant" class="boldText"/>
+			                                <Text text="{PRdata>/PurchaseReq/PlantDesc} ({PRdata>/PurchaseReq/Plant})" id="plant" class="boldText"/>
 			                            </f:fields>
 			                        </f:FormElement>
 			                        <f:FormElement id="_IDMaterial" label="Material/Service">
 			                            <f:fields>
-			                                <Text text="{PRdata>MaterialDescription} ({PRdata>/PurchaseReq/MaterialNumber})" id="Material" class="boldText"/>
+			                                <Text text="{PRdata>/PurchaseReq/MaterialDesc} ({PRdata>/PurchaseReq/MaterialNumber})" id="Material" class="boldText"/>
 			                            </f:fields>
 			                        </f:FormElement>
 			                    </f:formElements>
@@ -221,22 +226,31 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
 			                    </f:FormElement> -->
 			                    <f:FormElement id="_IDGenFormElement11" label="{i18n>AccountAssignmentCategory}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/AccountAssignmentCategoryDescription} ({PRdata>/PurchaseReq/AccountAssignmentCategory})" class="boldText" id="aaCatText"/>
+			                            <Text text="{
+											   parts: [{path: 'PRdata>/PurchaseReq/AccAssignCatDesc'},{path: 'PRdata>/PurchaseReq/AccAssignCat'}],
+											   formatter: '.AccAssign'
+											}"
+										class="boldText" id="aaCatText"/>
+			                        </f:fields>
+			                    </f:FormElement>
+								<f:FormElement id="_IDGenFormElement21" label="{i18n>CreationIndicator}">
+			                        <f:fields>
+			                            <Text text="{PRdata>/PurchaseReq/CreationIndicator}" id="creIndi" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
 			                    <f:FormElement id="_IDGenFormElement12" label="{i18n>PurchasingGroup}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/PurchasingGroupDescription} ({PRdata>/PurchaseReq/PurchasingGroup})" id="prGroupText" class="boldText"/>
+			                            <Text text="{PRdata>/PurchaseReq/PurchasingGroupDesc} ({PRdata>/PurchaseReq/PurchasingGroup})" id="prGroupText" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
 			                    <f:FormElement id="_IDGenFormElement13" label="{i18n>PurchaseRequisitionDocumentType}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/PRDocTypeDesc} ({PRdata>/PurchaseReq/PRDocType})" id="prDocTypeDesc" class="boldText"/>
+			                            <Text text="{PRdata>/PurchaseReq/PrDocumentTypeDesc} ({PRdata>/PurchaseReq/PrDocType})" id="prDocTypeDesc" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
 			                    <f:FormElement id="_IDGenFormElement14" label="{i18n>GLAccount}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/GLaccount}" id="GLaccounttext" class="boldText"/>
+			                            <Text text="{PRdata>/PurchaseReq/GlAccount}" id="GLaccounttext" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
 			                    <!-- <f:FormElement id="_IDGenFormElement15" label="WBS Element">
@@ -246,22 +260,22 @@ xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout
 			                    </f:FormElement> -->
 			                    <f:FormElement id="_IDGenFormElement16" label="{i18n>CostCenter}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/CostCenterDescription} ({PRdata>/PurchaseReq/CostCenter})" id="cCenter" class="boldText"/>
+			                            <Text text="{PRdata>/PurchaseReq/CostCenterDesc} ({PRdata>/PurchaseReq/CostCenter})" id="cCenter" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
                                 <f:FormElement id="_IDGenFormElement17" label="{i18n>WBSType}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/WBSType}" id="wbsType" class="boldText"/>
+			                            <Text text="{PRdata>/PurchaseReq/WbsType}" id="wbsType" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
                                 <f:FormElement id="_IDGenFormElement18" label="{i18n>ProductionOrder}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/ProdOrd}" id="prodOrder" class="boldText"/>
+			                            <Text text="{PRdata>/PurchaseReq/ProductionOrder}" id="prodOrder" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
                                 <f:FormElement id="_IDGenFormElement19" label="{i18n>SalesDocumentNumber}">
 			                        <f:fields>
-			                            <Text text="{PRdata>/PurchaseReq/SalesDocNumb}" id="salesDocNum" class="boldText"/>
+			                            <Text text="{PRdata>/PurchaseReq/SalesDocNumber}" id="salesDocNum" class="boldText"/>
 			                        </f:fields>
 			                    </f:FormElement>
                                 <f:FormElement id="_IDGenFormElement20" label="{i18n>SalesDocumentNumberItem}">
